@@ -18,7 +18,7 @@ Add search, sorting, and pagination to `GET /products` so users can quickly find
 
 `GET /products` accepts the following optional query parameters:
 
-| Parameter | 規則 |
+| Parameter | Rules |
 | --- | --- |
 | `q` | Case-insensitive partial match against product name or category |
 | `sort` | Only allow `name` or `price`; invalid values must return HTTP 422 |
