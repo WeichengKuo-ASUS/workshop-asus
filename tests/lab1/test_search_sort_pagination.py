@@ -24,6 +24,14 @@ def test_sort_by_price_descending(client: TestClient) -> None:
     assert prices == sorted(prices, reverse=True)
 
 
+def test_sort_uses_ascending_order_by_default(client: TestClient) -> None:
+    response = client.get("/products", params={"sort": "price"})
+
+    assert response.status_code == 200
+    prices = [item["price"] for item in response.json()["items"]]
+    assert prices == sorted(prices)
+
+
 def test_pagination_reports_total_before_slicing(client: TestClient) -> None:
     response = client.get("/products", params={"page": 2, "page_size": 2})
 

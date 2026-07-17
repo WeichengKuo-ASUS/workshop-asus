@@ -19,6 +19,15 @@ def test_list_products(client: TestClient) -> None:
     assert body["items"][0]["name"] == "Zenbook 14 OLED"
 
 
+def test_list_products_searches_category(client: TestClient) -> None:
+    response = client.get("/products", params={"q": "monitor"})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 1
+    assert [item["name"] for item in body["items"]] == ["ProArt Display PA279CRV"]
+
+
 def test_get_product(client: TestClient) -> None:
     response = client.get("/products/2")
 

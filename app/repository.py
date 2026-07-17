@@ -1,3 +1,5 @@
+from typing import Literal
+
 from app.models import Product
 
 PRODUCTS = [
@@ -10,10 +12,36 @@ PRODUCTS = [
 ]
 
 
-def list_products() -> list[Product]:
-    return PRODUCTS.copy()
+def list_products(
+    *,
+    q: str | None = None,
+    sort: Literal["name", "price"] | None = None,
+    order: Literal["asc", "desc"] = "asc",
+    page: int = 1,
+    page_size: int = 20,
+) -> tuple[list[Product], int]:
+    filtered_products = PRODUCTS.copy()
+
+    if q is not None:
+        query = q.casefold()
+        filtered_products = [
+            product
+            for product in filtered_products
+            if query in product.name.casefold() or query in product.category.casefold()
+        ]
+
+    if sort is not None:
+        filtered_products = sorted(
+            filtered_products,
+            key=lambda product: getattr(product, sort),
+            reverse=order == "desc",
+        )
+
+    total = len(filtered_products)
+    start = (page - 1) * page_size
+    end = start + page_size
+    return filtered_products[start:end], total
 
 
 def get_product(product_id: int) -> Product | None:
     return next((product for product in PRODUCTS if product.id == product_id), None)
-
