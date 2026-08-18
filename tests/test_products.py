@@ -26,6 +26,34 @@ def test_get_product(client: TestClient) -> None:
     assert response.json()["name"] == "ROG Zephyrus G14"
 
 
+def test_list_products_supports_combined_query_options(client: TestClient) -> None:
+    response = client.get(
+        "/products",
+        params={
+            "q": "gaming",
+            "sort": "price",
+            "order": "asc",
+            "page": 1,
+            "page_size": 1,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "items": [
+            {
+                "id": 4,
+                "name": "TUF Gaming A15",
+                "category": "Gaming Laptop",
+                "price": 38900.0,
+            }
+        ],
+        "total": 2,
+        "page": 1,
+        "page_size": 1,
+    }
+
+
 def test_get_missing_product(client: TestClient) -> None:
     response = client.get("/products/999")
 
